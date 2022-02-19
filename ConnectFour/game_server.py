@@ -13,7 +13,8 @@ def handle_clients(client_socket1, client_socket2):
     ##  Notify player1 to start
     start_message = "start".encode('utf-8')
     client_socket1.send(start_message)
-    
+
+    ## Pass messages between the clients
     while True:
         request = client_socket1.recv(1024)
         print("[*]  Received: %s from client1" % request)
