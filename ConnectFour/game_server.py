@@ -28,18 +28,20 @@ def handle_clients(client_socket1, client_socket2):
         client_socket1.send(request)
         print("[*]  Send %s to client1" % request)
 
-gameserver = Server()
-gameserver.server.listen(2)
+if __name__ == "__main__":
 
-while True:
+    gameserver = Server()
+    gameserver.server.listen(2)
 
-    client1, addr1 = gameserver.server.accept()
+    while True:
 
-    print("[*]  Accepted connection from: %s%d" % (addr1[0], addr1[1]))
+        client1, addr1 = gameserver.server.accept()
 
-    client2, addr2 = gameserver.server.accept()
+        print("[*]  Accepted connection from: %s%d" % (addr1[0], addr1[1]))
 
-    print("[*]  Accepted connection from: %s%d" % (addr2[0], addr2[1]))
+        client2, addr2 = gameserver.server.accept()
 
-    client_handler = threading.Thread(target=handle_clients, args=(client1, client2))
-    client_handler.start()
+        print("[*]  Accepted connection from: %s%d" % (addr2[0], addr2[1]))
+
+        client_handler = threading.Thread(target=handle_clients, args=(client1, client2))
+        client_handler.start()
