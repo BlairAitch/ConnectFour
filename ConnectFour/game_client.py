@@ -22,16 +22,13 @@ class Game():
     def insert_counter(self, column, ourTurn):
         # starting at the bottom of the board, check for a free space
         for i in range(6, -1, -1):
-
             if(self.gamestate[i][column] == '-'):
-
                 if ourTurn:
                     self.gamestate[i][column] = 'X'
                     return (i, column)
                 else:
                     self.gamestate[i][column] = 'O'
                     return (i, column)
-
 
     #  given a row indice on the board, check for 4 consecutive counters
     def check_win_row(self, row):
@@ -40,10 +37,12 @@ class Game():
         for i in range(0, 6):
             if self.gamestate[row][i] == 'X':
                 counters += 1
+                print("Winning row counters: %d" % counters)
                 if counters == 4:
                     return True
-            else:
-                return False
+            if self.gamestate[row][i] == '-':
+                counters = 0
+        return False
 
     def check_win_column(self, column):
         counters = 0
@@ -51,28 +50,29 @@ class Game():
         for i in range(0, 7):
             if self.gamestate[i][column] == 'X':
                 counters += 1
+                print("Winning column counters: %d" % counters)
                 if counters == 4:
                     return True
-            else:
-                return False
+            if self.gamestate[i][column] == '-':
+                counters = 0
+        return False
 
     #  given a boardspace (row, column) check for a win, return Boolean
     def check_win(self, boardspace):
-
+        win = False
         row = boardspace[0]
         column = boardspace[1]
 
-        if self.check_win_row(row):
-            return True
-        elif self.check_win_column(column):
-            return True
-        else:
-            return False
+        row_win = self.check_win_row(row)
+        column_win = self.check_win_column(column)
+        if row_win or column_win:
+            win = True
+        return win
 
 
 if __name__ == "__main__":
     
-    target_host = "192.168.1.169"
+    target_host = "192.168.1.102"
     target_port = 4444
 
     client = Client(target_host, target_port)
@@ -108,11 +108,13 @@ if __name__ == "__main__":
 
         game.print_state()
         chosenColumn = input("Choose a column: ")
-        client_socket.send(chosenColumn.encode('utf-8'))
         boardspace = game.insert_counter(int(chosenColumn), True)
-        game.print_state()
         if game.check_win(boardspace):
             print("YOU WIN!!!")
+        game.print_state()
+        client_socket.send(chosenColumn.encode('utf-8'))
+
+
 
         received = client_socket.recv(1024).decode('utf-8')
 
