@@ -1,16 +1,15 @@
 import socket
 import sys
 
-class Client():
+class Client:
     def __init__(self, target_host, target_port):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.client.connect((target_host, target_port))
     
-class Game():
-
+class Game:
     def __init__(self):
         #  initialise a 7x6 2d array filled with '-' for the board
-        self.gamestate = [['-', '-', '-', '-', '-', '-'], ['-', '-', '-', '-', '-', '-'], ['-', '-', '-', '-', '-', '-'], ['-', '-', '-', '-', '-', '-'], ['-', '-', '-', '-', '-', '-'], ['-', '-', '-', '-', '-', '-'], ['-', '-', '-', '-', '-', '-']]
+        self.gamestate = [['-' for i in range(6)] for i in range(7)]
 
     def print_state(self):
         print("\n")
@@ -37,7 +36,6 @@ class Game():
         for i in range(0, 6):
             if self.gamestate[row][i] == 'X':
                 counters += 1
-                print("Winning row counters: %d" % counters)
                 if counters == 4:
                     return True
             if self.gamestate[row][i] == '-':
@@ -50,7 +48,6 @@ class Game():
         for i in range(0, 7):
             if self.gamestate[i][column] == 'X':
                 counters += 1
-                print("Winning column counters: %d" % counters)
                 if counters == 4:
                     return True
             if self.gamestate[i][column] == '-':
@@ -80,10 +77,10 @@ if __name__ == "__main__":
 
     game = Game()
 
-    ##  Server will send "start" to let us know if we're allowed to speak first
+    #  Server will send "start" to let us know if we're allowed to speak first
     received = client_socket.recv(1024).decode('utf-8')
 
-    ##  We're the first to go so send our move to the server then listen for reply
+    #  We're the first to go so send our move to the server then listen for reply
     if "start" in received:
 
         game.print_state()
@@ -96,7 +93,7 @@ if __name__ == "__main__":
         game.insert_counter(int(chosenColumn), False)
         game.print_state()
 
-    ##  If we were not the first to speak then update the game board based on player 1's move
+    #  If we were not the first to speak then update the game board based on player 1's move
     else:
 
         chosenColumn = int(received)
